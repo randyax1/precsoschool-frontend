@@ -1,24 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+import { ThemeProvider, createTheme,  } from '@mui/material/styles';
+import NavContainer from './containers/NavContainer';
+import CourseContainer from './containers/TeacherContainer/CourseContainer/CourseContainer';
+import HomeContainer from './containers/TeacherContainer/HomeContainer/HomeContainer';
+import LoginScreen from './screens/TeacherScreens/LoginScreen';
+import StudentScreen from './screens/TeacherScreens/StudentScreen';
+
+const theme = createTheme();
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <LoginScreen />
+      {/*
+      <NavContainer />
+      <HomeContainer />
+      <StudentScreen />
+      <CourseContainer />
+      */}
+    </ThemeProvider>
+    
   );
 }
 
