@@ -11,6 +11,7 @@ import ButtonLoading from "../../components/ButtonLoading";
 
 import { useNavigate } from 'react-router-dom';
 
+
 let theme = createTheme();
 theme = responsiveFontSizes(theme);
 
@@ -81,7 +82,7 @@ const LoginScreen = () => {
   const history = useNavigate();
 
   const login = () => {
-    history('/inicio-docente')
+    history('inicio-alumno')
   }
 
   return (
@@ -130,18 +131,18 @@ const LoginScreen = () => {
               PRECSO
               <span style={{ color: "#f18f00" }}>
                 SCHOOL
-                <span style={{ color: "#780116" }}>&nbsp;| Docente</span>
+                <span style={{ color: "#780116" }}>&nbsp;| Alumno</span>
               </span>
             </span>
           </span>
         </Typography>
 
-        <InputText 
-        textCenter
-        fullWidth 
-        label="Usuario" 
-        id="user" 
-        onChange={() => {}} 
+        <InputText
+          textCenter
+          fullWidth
+          label="Usuario"
+          id="user"
+          onChange={() => {}}
         />
 
         <InputText
@@ -160,7 +161,6 @@ const LoginScreen = () => {
           onClick={login}
           isLoading={false}
         />
-
       </Box>
     </div>
   );

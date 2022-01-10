@@ -6,7 +6,7 @@ const StudentScreen = () => {
     return (
         <>
         <CssBaseline />
-        <StudentContainer />
+        <StudentContainer/>
         </>
     )
 }
