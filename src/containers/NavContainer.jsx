@@ -14,13 +14,19 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import CameraIcon from "@mui/icons-material/Camera";
 
-import { makeStyles, createStyles } from '@mui/styles';
+import GridViewRoundedIcon from '@mui/icons-material/GridViewRounded';
+import AccountBoxRoundedIcon from '@mui/icons-material/AccountBoxRounded';
+import ClassRoundedIcon from '@mui/icons-material/ClassRounded';
 
-const drawerWidth = 200;
+import { makeStyles, createStyles } from '@mui/styles';
+import { useNavigate } from 'react-router-dom';
+import {
+  Outlet
+} from "react-router-dom";
+
+const drawerWidth = 180;
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -99,11 +105,43 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-const NavContainer = () => {
-
-  const classes = useStyles();
+const NavContainer = (props) => {
 
   const theme = useTheme();
+  const classes = useStyles();
+  const history = useNavigate();
+
+  const routesListDocente = [
+    {
+      text: "Inicio",
+      icon: <GridViewRoundedIcon style={{ color:'#757575'}} />,
+      onClick: () => history("inicio-docente", handleDrawerClose())
+    },
+    {
+      text: "Estudiantes",
+      icon: <AccountBoxRoundedIcon style={{ color:'#757575'}} />,
+      onClick: () => history("estudiantes", handleDrawerClose())
+    },
+    {
+      text: "Cursos",
+      icon: <ClassRoundedIcon style={{ color:'#757575'}} />,
+      onClick: () => history("cursos", handleDrawerClose())
+    }
+  
+  ];
+
+  const routesListAlumno = [
+    {
+      text: "Inicio",
+      icon: <GridViewRoundedIcon style={{ color:'#757575'}} />,
+      onClick: () => history("inicio-alumno", handleDrawerClose())
+    }
+  
+  ];
+
+  const Rol = "docente";
+  const list = Rol === "docente" ? routesListDocente : routesListAlumno;
+
   const [open, setOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
@@ -149,16 +187,18 @@ const NavContainer = () => {
         </DrawerHeader>
         <Divider />
         <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
+          {list.map((itemList, index) => {
+            const { text, icon, onClick } = itemList;
+            return (
+              <ListItem button key={text} onClick={onClick}>
+                {icon && <ListItemIcon>{icon}</ListItemIcon>}
+                <ListItemText primary={text} />
+              </ListItem>
+            );
+          })}
         </List>
       </Drawer>
+      <Outlet/>
     </div>
   );
 }
