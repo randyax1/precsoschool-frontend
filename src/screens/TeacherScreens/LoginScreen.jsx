@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -10,6 +10,8 @@ import InputText from "../../components/InputText";
 import ButtonLoading from "../../components/ButtonLoading";
 
 import { useNavigate } from 'react-router-dom';
+import { types } from "../../types/types";
+import { AuthContext } from "../../auth/authContext";
 
 let theme = createTheme();
 theme = responsiveFontSizes(theme);
@@ -79,9 +81,16 @@ const useStyles = makeStyles((theme) =>
 const LoginScreen = () => {
   const classes = useStyles();
   const history = useNavigate();
+  const { dispatch } = useContext(AuthContext);
 
   const login = () => {
-    history('/inicio-docente')
+    const action = {
+      type: types.login,
+      payload: { name: "Randall", Rol: "Docente" }
+    } 
+
+    dispatch(action);
+    history('/d/inicio-docente');
   }
 
   return (
