@@ -1,54 +1,59 @@
-import React from "react";
-import {
-  BrowserRouter,
-  Routes,
-  Route
-} from "react-router-dom";
+import React, { useEffect, useReducer } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import { ThemeProvider, createTheme,  } from '@mui/material/styles';
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 
-import LoginScreenStudent from './screens/StudentScreens/LoginScreen';
-import LoginScreenTeacher from './screens/TeacherScreens/LoginScreen';
-import HomeScreenDocente from "./screens/TeacherScreens/HomeScreen";
-import HomeScreenEstudiante from "./screens/StudentScreens/HomeScreen";
-import NavContainer from './containers/NavContainer';
-import PageNotFound from "./screens/PageNotFound";
-import CourseScreen from "./screens/TeacherScreens/CourseScreen";
-import StudentScreen from "./screens/TeacherScreens/StudentScreen";
-//import HomeContainer from './containers/TeacherContainer/HomeContainer/HomeContainer';
-//import CourseContainer from './containers/TeacherContainer/CourseContainer/CourseContainer';
+import { AuthContext } from "./auth/authContext";
+import { authReducer } from "./auth/authReducer";
+
+import LoginScreenTeacher from "./screens/TeacherScreens/LoginScreen";
+import { NavRoutersDocente } from "./routers/NavRoutersDocente";
+import { PrivateRouteDocente } from "./routers/PrivateRouteDocente";
+
+import LoginScreenStudent from "./screens/StudentScreens/LoginScreen";
+import { NavRoutersAlumno } from "./routers/NavRoutersAlumno";
+import { PrivateRouteAlumno } from "./routers/PrivateRouteAlumno";
 
 const theme = createTheme();
 
+const init = () => {
+  return JSON.parse(localStorage.getItem("user")) || { logged: false };
+};
+
 function App() {
-  //el valor en 1 es referente al Rol de docente
-  //const Rol = 1;
+  const [user, dispatch] = useReducer(authReducer, {}, init);
 
-  return (  
-    <BrowserRouter>
-    <ThemeProvider theme={theme}>
-      <Routes>
+  useEffect(() => {
+    if (!user) return;
+    localStorage.setItem("user", JSON.stringify(user));
+  }, [user]);
 
+  return (
+    <AuthContext.Provider value={{ user, dispatch }}>
+      <BrowserRouter>
+        <ThemeProvider theme={theme}>
+          <Routes>
 
-        <Route path="/" element={<LoginScreenStudent/>}/>
-        <Route element={<NavContainer/>}>
-          <Route path="inicio-alumno" element={<HomeScreenEstudiante/>}/>
-        </Route>
+            <Route path="/" element={<LoginScreenStudent />} />
+            <Route path="a/*" element={
+                <PrivateRouteAlumno>
+                  <NavRoutersAlumno />
+                </PrivateRouteAlumno>
+              }
+            />
 
-
-        <Route path="/login-docente" element={<LoginScreenTeacher/>}/>
-        <Route element={<NavContainer/>}>          
-          <Route path="inicio-docente" element={<HomeScreenDocente/>}/>
-          <Route path="estudiantes" element={<StudentScreen/>}/>
-          <Route path="cursos" element={<CourseScreen/>}/>
-        </Route>
-
-        <Route path="*" element={<PageNotFound />} />
-
-      </Routes>
-      
-    </ThemeProvider>
-    </BrowserRouter>
+            <Route path="/login-docente" element={<LoginScreenTeacher />} />
+            <Route path="d/*" element={
+                <PrivateRouteDocente>
+                  <NavRoutersDocente />
+                </PrivateRouteDocente>
+              }
+            />
+            
+          </Routes>
+        </ThemeProvider>
+      </BrowserRouter>
+    </AuthContext.Provider>
   );
 }
 

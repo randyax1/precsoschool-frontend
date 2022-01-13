@@ -19,12 +19,16 @@ import CameraIcon from "@mui/icons-material/Camera";
 import GridViewRoundedIcon from '@mui/icons-material/GridViewRounded';
 import AccountBoxRoundedIcon from '@mui/icons-material/AccountBoxRounded';
 import ClassRoundedIcon from '@mui/icons-material/ClassRounded';
+import ExitToAppRoundedIcon from '@mui/icons-material/ExitToAppRounded';
 
 import { makeStyles, createStyles } from '@mui/styles';
 import { useNavigate } from 'react-router-dom';
 import {
   Outlet
 } from "react-router-dom";
+import { useContext } from 'react';
+import { AuthContext } from '../auth/authContext';
+import { types } from '../types/types';
 
 const drawerWidth = 180;
 
@@ -126,8 +130,13 @@ const NavContainer = (props) => {
       text: "Cursos",
       icon: <ClassRoundedIcon style={{ color:'#757575'}} />,
       onClick: () => history("cursos", handleDrawerClose())
+    },
+    {
+    text: "Logout",
+    icon: <ExitToAppRoundedIcon style={{color: 'red'}} />,
+    onClick: () => history("/login-docente", handleLogout())
     }
-  
+
   ];
 
   const routesListAlumno = [
@@ -135,14 +144,20 @@ const NavContainer = (props) => {
       text: "Inicio",
       icon: <GridViewRoundedIcon style={{ color:'#757575'}} />,
       onClick: () => history("inicio-alumno", handleDrawerClose())
+    },
+    {
+      text: "Logout",
+      icon: <ExitToAppRoundedIcon style={{color: 'red'}} />,
+      onClick: () => history("/", handleLogout())
     }
   
   ];
 
-  const Rol = "docente";
-  const list = Rol === "docente" ? routesListDocente : routesListAlumno;
-
   const [open, setOpen] = React.useState(false);
+
+  const { user, dispatch } = useContext(AuthContext);
+
+  const list = user.Rol === "Docente" ? routesListDocente : routesListAlumno; 
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -151,6 +166,11 @@ const NavContainer = (props) => {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  const handleLogout = () => {
+    dispatch({ type: types.logout });
+    handleDrawerClose();
+  }
 
   return (
     <div sx={{ display: 'flex' }}>
