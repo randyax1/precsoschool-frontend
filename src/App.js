@@ -7,12 +7,14 @@ import { AuthContext } from "./auth/authContext";
 import { authReducer } from "./auth/authReducer";
 
 import LoginScreenTeacher from "./screens/TeacherScreens/LoginScreen";
-import { NavRoutersDocente } from "./routers/NavRoutersDocente";
-import { PrivateRouteDocente } from "./routers/PrivateRouteDocente";
+import { NavRoutersDocente } from "./routers/TeacherRouters/NavRoutersDocente";
+import { PublicRouteDocente } from "./routers/TeacherRouters/PublicRouteDocente";
+import { PrivateRouteDocente } from "./routers/TeacherRouters/PrivateRouteDocente";
 
 import LoginScreenStudent from "./screens/StudentScreens/LoginScreen";
-import { NavRoutersAlumno } from "./routers/NavRoutersAlumno";
-import { PrivateRouteAlumno } from "./routers/PrivateRouteAlumno";
+import { NavRoutersAlumno } from "./routers/StudentRouters/NavRoutersAlumno";
+import { PublicRouteAlumno } from "./routers/StudentRouters/PublicRouteAlumno";
+import { PrivateRouteAlumno } from "./routers/StudentRouters/PrivateRouteAlumno";
 
 const theme = createTheme();
 
@@ -21,6 +23,7 @@ const init = () => {
 };
 
 function App() {
+
   const [user, dispatch] = useReducer(authReducer, {}, init);
 
   useEffect(() => {
@@ -34,15 +37,27 @@ function App() {
         <ThemeProvider theme={theme}>
           <Routes>
 
-            <Route path="/" element={<LoginScreenStudent />} />
+            <Route path="/" element={
+                <PublicRouteAlumno>
+                  <LoginScreenStudent />
+                </PublicRouteAlumno>
+              } 
+            />
+
             <Route path="a/*" element={
                 <PrivateRouteAlumno>
                   <NavRoutersAlumno />
                 </PrivateRouteAlumno>
               }
             />
-
-            <Route path="/login-docente" element={<LoginScreenTeacher />} />
+            
+            <Route path="/login-docente" element={
+                <PublicRouteDocente>
+                  <LoginScreenTeacher />
+                </PublicRouteDocente>
+              } 
+            />
+            
             <Route path="d/*" element={
                 <PrivateRouteDocente>
                   <NavRoutersDocente />

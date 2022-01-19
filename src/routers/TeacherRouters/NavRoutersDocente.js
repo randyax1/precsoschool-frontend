@@ -1,10 +1,10 @@
 import { Route, Routes } from "react-router-dom";
 
-import CourseScreen from "../screens/TeacherScreens/CourseScreen";
-import StudentScreen from "../screens/TeacherScreens/StudentScreen";
-import HomeScreenDocente from "../screens/TeacherScreens/HomeScreen";
-import PageNotFound from "../screens/PageNotFound";
-import NavContainer from "../containers/NavContainer";
+import CourseScreen from "../../screens/TeacherScreens/CourseScreen";
+import StudentScreen from "../../screens/TeacherScreens/StudentScreen";
+import HomeScreenDocente from "../../screens/TeacherScreens/HomeScreen";
+import PageNotFound from "../../screens/PageNotFound";
+import NavContainer from "../../containers/NavContainer";
 
 export const NavRoutersDocente = () => {
   return (
