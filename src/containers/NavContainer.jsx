@@ -157,7 +157,7 @@ const NavContainer = (props) => {
 
   const { user, dispatch } = useContext(AuthContext);
 
-  const list = user.Rol === "Docente" ? routesListDocente : routesListAlumno; 
+  const list = user.Rol === "teacher" ? routesListDocente : routesListAlumno; 
 
   const handleDrawerOpen = () => {
     setOpen(true);

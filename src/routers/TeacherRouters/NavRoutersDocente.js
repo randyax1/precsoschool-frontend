@@ -16,7 +16,7 @@ export const NavRoutersDocente = () => {
           <Route path="cursos" element={<CourseScreen />} />
         </Route>
 
-        <Route path="*" element={<PageNotFound />} />
+        <Route path="*" element={<PageNotFound />}> </Route>
         
       </Routes>
     </>
