@@ -1,19 +1,19 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
+import Alert from "@mui/material/Alert";
 import Avatar from "@mui/material/Avatar";
-import CssBaseline from "@mui/material/CssBaseline";
+import Snackbar from "@mui/material/Snackbar";
+import Typography from "@mui/material/Typography";
 import CameraIcon from "@mui/icons-material/Camera";
+import CssBaseline from "@mui/material/CssBaseline";
 import { makeStyles, createStyles } from "@mui/styles";
 import { createTheme, responsiveFontSizes } from "@mui/material/styles";
-import Typography from "@mui/material/Typography";
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
 
-import InputText from "../../components/InputText";
-import ButtonLoading from "../../components/ButtonLoading";
 import { types } from "../../types/types";
+import InputText from "../../components/InputText";
 import { AuthContext } from "../../auth/authContext";
+import ButtonLoading from "../../components/ButtonLoading";
 import { TeacherLoginUser } from "../../lib/demoBackEndClient";
 
 let theme = createTheme();
@@ -83,12 +83,12 @@ const useStyles = makeStyles((theme) =>
 
 const LoginScreen = () => {
   const classes = useStyles();
-  
+
   const history = useNavigate();
   const { dispatch } = useContext(AuthContext);
 
   const [isErrorAtLogin, setErrorAtLogin] = useState(false);
-  const [errorMessageAtLogin, setErrorMessageAtLogin] = useState('');
+  const [errorMessageAtLogin, setErrorMessageAtLogin] = useState("");
 
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(false);
@@ -99,8 +99,7 @@ const LoginScreen = () => {
   const [loading, setLoading] = useState(false);
 
   // eslint-disable-next-line
-  let regEmail =
-    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  let regEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   const handleEmail = (event) => {
     setEmail(event.target.value);
@@ -109,6 +108,12 @@ const LoginScreen = () => {
   const handlePassword = (event) => {
     setPassword(event.target.value);
   };
+
+  useEffect(() => {
+    return () => {
+      // This is the cleanup function
+    }
+  }, [email, password]);
 
   const login = async () => {
     if (email === "") {
@@ -137,31 +142,30 @@ const LoginScreen = () => {
       setLoading(true);
 
       try {
-
         const loginTeacherResponse = await TeacherLoginUser(email, password);
-        console.log(loginTeacherResponse);
+        
         const action = {
           type: types.login,
-          payload: { 
+          payload: {
             Rol: loginTeacherResponse.data.rol,
-            name: loginTeacherResponse.data.name, 
-          }
-        }
+            name: loginTeacherResponse.data.name,
+          },
+        };
 
         dispatch(action);
-        history('/a/inicio-alumno');
+        history("/d/inicio-docente");
         setLoading(false);
-
       } catch (error) {
         setErrorAtLogin(true);
         setErrorMessageAtLogin(error.response.data.msg);
         setLoading(false);
       }
-
     }
   };
 
-  const handleErrorAtLoginAlertClose = () => { setErrorAtLogin(false); };
+  const handleErrorAtLoginAlertClose = () => {
+    setErrorAtLogin(false);
+  };
 
   return (
     <div className={classes.main}>
@@ -246,12 +250,20 @@ const LoginScreen = () => {
         />
       </Box>
 
-      <Snackbar open={isErrorAtLogin} autoHideDuration={3000} onClose={handleErrorAtLoginAlertClose}>
-        <Alert onClose={handleErrorAtLoginAlertClose} variant="filled" color="error" severity="info">
+      <Snackbar
+        open={isErrorAtLogin}
+        autoHideDuration={3000}
+        onClose={handleErrorAtLoginAlertClose}
+      >
+        <Alert
+          onClose={handleErrorAtLoginAlertClose}
+          variant="filled"
+          color="error"
+          severity="info"
+        >
           {errorMessageAtLogin}
         </Alert>
       </Snackbar>
-
     </div>
   );
 };
