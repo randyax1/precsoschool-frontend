@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { makeStyles, createStyles } from "@mui/styles";
-import { Typography, TextField } from "@mui/material";
+import { Typography, TextField, InputAdornment } from "@mui/material";
 import { createTheme, responsiveFontSizes } from "@mui/material/styles";
 import PropTypes from "prop-types";
 
@@ -55,7 +55,7 @@ const InputText = (props) => {
 
   return (
     <>
-      <Typography className={classes.titleLabel} mt={2} mb={1} variant="h5">
+      <Typography className={classes.titleLabel} mb={1} variant="h5">
         {props.label}
       </Typography>
 
@@ -81,7 +81,11 @@ const InputText = (props) => {
         onChange={(event) => onValueChange(event)}
         value={value}
         disabled={props.disabled}
-        inputProps={{style: {fontSize:'20px'}}}
+        
+        InputProps={{
+          style: {fontSize:'20px'},
+          startAdornment: <InputAdornment position="start">{props.icon}</InputAdornment>,
+        }}
       />
     </>
   );

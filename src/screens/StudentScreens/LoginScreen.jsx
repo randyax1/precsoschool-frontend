@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Alert from "@mui/material/Alert";
@@ -14,7 +15,6 @@ import { types } from "../../types/types";
 import InputText from "../../components/InputText";
 import { AuthContext } from "../../auth/authContext";
 import ButtonLoading from "../../components/ButtonLoading";
-import { StudentLoginUser } from "../../lib/demoBackEndClient";
 
 let theme = createTheme();
 theme = responsiveFontSizes(theme);
@@ -142,7 +142,11 @@ const LoginScreen = () => {
       setLoading(true);
 
       try {
-        const loginStudentResponse = await StudentLoginUser(email, password);
+
+        const data = { email, password}
+        
+        const loginStudentResponse = await axios.post('http://localhost:8080/api/auth/student/', data);
+        console.log(loginStudentResponse);
 
         const action = {
           type: types.login,
@@ -156,8 +160,17 @@ const LoginScreen = () => {
         history("/a/inicio-alumno");
         setLoading(false);
       } catch (error) {
-        setErrorAtLogin(true);
-        setErrorMessageAtLogin(error.response.data.msg);
+        const errorMessage = error.response.data.msg;
+        
+        if(errorMessage.includes("The user or password are incorrect.")) {
+          setErrorAtLogin(true);
+          setErrorMessageAtLogin("El usuario o contraseña son incorrectos.");
+        }
+        else if(errorMessage.includes("Password incorrect.")) {
+          setErrorAtLogin(true);
+          setErrorMessageAtLogin("Contraseña ingresada incorrecta.");
+        }
+
         setLoading(false);
       }
     }
