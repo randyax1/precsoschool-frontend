@@ -6,7 +6,6 @@ import TitleLabel from '../../../components/TitleLabel';
 const HomeContainer = () => {
 
     const { user } = useContext(AuthContext);
-    console.log(user.name)
     
     return (
         <div style={{ marginTop:'12px' }}>

@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) =>
         paddingLeft:'90px',
 
         [theme.breakpoints.down('md')]: {
-          fontSize:'20px',
+          fontSize:'3 5px',
           paddingLeft:'80px',
         },
 

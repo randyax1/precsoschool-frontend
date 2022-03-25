@@ -4,11 +4,17 @@ import axios from "axios";
 const localhost = "http://localhost:8080";
 
 const host = localhost;
+
 const BASE_ENDPOINT = "/api";
 
 const TEACHERUSER_ENDPOINT = BASE_ENDPOINT + "/auth/teacher";
-
 const STUDENTUSER_ENDPOINT = BASE_ENDPOINT + "/auth/student";
+
+const COURSE_ENDPOINT = BASE_ENDPOINT + "/courses/";
+
+const createAuthHeader = (token)  => {
+    return { 'x-token': `${token}`};
+}
 
 export const TeacherLoginUser = async (email, password) => {
     const body = {
@@ -34,4 +40,17 @@ export const StudentLoginUser = async (email, password) => {
         body
     );
 
+};
+
+export const getCourses = async (token) => {
+    const config = {
+        headers: {
+            ...createAuthHeader(token)
+        }
+    };
+
+    return await axios.get(
+        `${host}${COURSE_ENDPOINT}`,
+        config
+        );
 };

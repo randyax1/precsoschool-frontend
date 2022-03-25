@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import Box from "@mui/material/Box";
 import Alert from "@mui/material/Alert";
 import Avatar from "@mui/material/Avatar";
@@ -142,23 +143,36 @@ const LoginScreen = () => {
       setLoading(true);
 
       try {
+
         const loginTeacherResponse = await TeacherLoginUser(email, password);
-        
+
         const action = {
           type: types.login,
           payload: {
             Rol: loginTeacherResponse.data.rol,
             name: loginTeacherResponse.data.name,
+            token: loginTeacherResponse.data.token
           },
         };
-
+        
         dispatch(action);
         history("/d/inicio-docente");
         setLoading(false);
       } catch (error) {
-        setErrorAtLogin(true);
-        setErrorMessageAtLogin(error.response.data.msg);
+        
+        const errorMessage = error.response.data.msg;
+        
+        if(errorMessage.includes("The user or password are incorrect.")) {
+          setErrorAtLogin(true);
+          setErrorMessageAtLogin("El usuario o contraseña son incorrectos.");
+        }
+        else if(errorMessage.includes("Password incorrect.")) {
+          setErrorAtLogin(true);
+          setErrorMessageAtLogin("Contraseña ingresada incorrecta.");
+        }
+
         setLoading(false);
+
       }
     }
   };
