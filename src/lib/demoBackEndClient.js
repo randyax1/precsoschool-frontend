@@ -11,6 +11,7 @@ const TEACHERUSER_ENDPOINT = BASE_ENDPOINT + "/auth/teacher";
 const STUDENTUSER_ENDPOINT = BASE_ENDPOINT + "/auth/student";
 
 const COURSE_ENDPOINT = BASE_ENDPOINT + "/courses/";
+const STUDENT_ENDPOINT = BASE_ENDPOINT + "/students/"
 
 const createAuthHeader = (token)  => {
     return { 'x-token': `${token}`};
@@ -53,4 +54,17 @@ export const getCourses = async (token) => {
         `${host}${COURSE_ENDPOINT}`,
         config
         );
+};
+
+export const getStudents = async (token) => {
+    const config ={
+        headers: {
+            ...createAuthHeader(token)
+        }
+    };
+
+    return await axios.get(
+        `${host}${STUDENT_ENDPOINT}`,
+        config
+    );
 };
