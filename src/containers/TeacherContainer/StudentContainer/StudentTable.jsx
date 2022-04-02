@@ -1,6 +1,4 @@
-import React, { useEffect, useState, useContext} from "react";
-import moment from "moment";
-import "moment/locale/es-mx"
+import React, { useEffect, useState, useContext } from "react";
 
 import {
   Paper,
@@ -20,11 +18,9 @@ import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
-import InputText from "../../../components/InputText";
+import { getStudents } from "../../../lib/demoBackEndClient";
 import { AuthContext } from "../../../auth/authContext";
-import { getCourses } from "../../../lib/demoBackEndClient";
-
-moment.locale("es-mx");
+import InputText from "../../../components/InputText";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -81,8 +77,8 @@ const useStyles = makeStyles((theme) =>
       WebkitUserSelect: "none",
     },
     textTableFontHeader: {
-      color:'#252122',
-      fontWeight:'bold'
+      color: "#252122",
+      fontWeight: "bold",
     },
     tableBody: {
       color: "#011228",
@@ -95,13 +91,10 @@ const columns = [
     label: "Nombre",
   },
   {
-    label: "Descripción",
+    label: "Apellido",
   },
   {
-    label: "Fecha de inicio",
-  },
-  {
-    label: "Fecha termino",
+    label: "Email",
   },
   {
     label: "Editar",
@@ -111,7 +104,7 @@ const columns = [
   },
 ];
 
-export const CourseTable = () => {
+export const StudentTable = () => {
 
   const classes = useStyles();
 
@@ -120,60 +113,60 @@ export const CourseTable = () => {
   const { user } = useContext(AuthContext);
   const token = user.token;
 
-  const [courses, setCourses] = useState([]);
+  const [students, setStudents] = useState([]);
 
-  const [courseToEdit, setCourseToEdit] = useState();
-  const [courseIdToEdit, setCourseIdToEdit] = useState("");
+  const [studentToEdit, setStudentToEdit] = useState();
+  const [studentIdToEdit, setStudentIdToEdit] = useState("");
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const [openAlert, setOpenAlert] = useState(false);
-  const [courseModalOpen, setCourseModalOpen] = useState(false);
-  const [deleteCourseModalOpen, setDeleteCourseModalOpen] = useState(false);
-  const [courseToBeDelete, setCourseToBeDelete] = useState("");
+  const [studentModalOpen, setStudentModalOpen] = useState(false);
+  const [deleteStudentModalOpen, setDeleteStudentModalOpen] = useState(false);
+  const [studentToBeDelete, setStudentToBeDelete] = useState("");
 
-  const fetchCourses = async () => {
-    let precsoSchoolAppResponse = await getCourses(token);
-    setCourses(precsoSchoolAppResponse.data.events);
+  const fetchStudents = async () => {
+    let precsoSchoolAppResponse = await getStudents(token);
+    setStudents(precsoSchoolAppResponse.data.Students);
   };
 
   useEffect(() => {
-    fetchCourses();
+    fetchStudents();
   }, []);
 
   const onFilterInputChange = (event) => {
     setFilter(event.target.value);
   };
 
-  const handleCourseModalClose = () => {
-    setCourseModalOpen(false);
+  const handleStudentModalClose = () => {
+    setStudentModalOpen(false);
   };
 
   const handleAlertClose = () => {
     setOpenAlert(false);
   };
 
-  const onCourseModalAcceptClick = async () => {
-    await fetchCourses();
+  const onStudentModalAcceptClick = async () => {
+    await fetchStudents();
   };
 
-  const onEditCourseButtonClick = (course) => {
-    setCourseToEdit(course);
-    setCourseIdToEdit(course);
-    setCourseModalOpen(true);
+  const onEditStudentButtonClick = (student) => {
+    setStudentToEdit(student);
+    setStudentIdToEdit(student);
+    setStudentModalOpen(true);
   };
 
-  const onDeleteCourseIconClick = (course) => {
-    setDeleteCourseModalOpen(true);
-    setCourseToBeDelete(course._id);
+  const onDeleteStudentIconClick = (student) => {
+    setDeleteStudentModalOpen(true);
+    setStudentToBeDelete(student._id);
   };
 
-  const onCourseDeleted = async () => {
-    setDeleteCourseModalOpen(false);
+  const onStudentDeleted = async () => {
+    setDeleteStudentModalOpen(false);
     //Falta peticion de retorno de id
     setOpenAlert(true);
-    await fetchCourses();
+    await fetchStudents();
   };
 
   const handleChangePage = (event, newPage) => {
@@ -189,7 +182,6 @@ export const CourseTable = () => {
     <>
       <Paper className={classes.searchArea}>
         <InputText
-          type="search"
           icon={<SearchRoundedIcon />}
           id="filter"
           onChange={onFilterInputChange}
@@ -197,7 +189,7 @@ export const CourseTable = () => {
         />
       </Paper>
 
-      <Paper variant="outlined" className={classes.root}>
+      <Paper elevation={5} variant="outlined" className={classes.root}>
         <TableContainer className={classes.container}>
           <Table stickyHeader aria-label="sticky table">
             <caption>***N/P = No proporcionado***</caption>
@@ -223,7 +215,10 @@ export const CourseTable = () => {
             <TableBody>
               {
                 //eslint-disable-next-line
-                courses && !!courses.length && courses.filter((item) => {
+                students &&
+                  !!students.length &&
+                  students
+                    .filter((item) => {
                       //eslint-disable-next-line
                       if (filter == "") {
                         return item;
@@ -232,14 +227,18 @@ export const CourseTable = () => {
                       ) {
                         return item;
                       } else if (
-                        item.description
+                        item.lastName
                           .toLowerCase()
                           .includes(filter.toLowerCase())
                       ) {
                         return item;
                       }
                     })
-                    ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item, index) => {
+                    ?.slice(
+                      page * rowsPerPage,
+                      page * rowsPerPage + rowsPerPage
+                    )
+                    .map((item, index) => {
                       return (
                         <TableRow hover role="checkbox" key={index}>
                           <TableCell align="left">
@@ -256,7 +255,7 @@ export const CourseTable = () => {
                               variant="subtitle1"
                               className={classes.tableBody}
                             >
-                              {item.description}
+                              {item.lastName}
                             </Typography>
                           </TableCell>
 
@@ -265,34 +264,27 @@ export const CourseTable = () => {
                               variant="subtitle1"
                               className={classes.tableBody}
                             >
-                              {moment(item.start).format("LL")}
+                              {item.email}
                             </Typography>
                           </TableCell>
 
                           <TableCell align="left">
-                            <Typography
-                              variant="subtitle1"
-                              className={classes.tableBody}
-                            >
-                              {moment(item.end).format("LL")}
-                            </Typography>
-                          </TableCell>
-
-                          <TableCell align="center">
                             <IconButton
-                              onClick={() => onEditCourseButtonClick(item)}
+                              onClick={() => onEditStudentButtonClick(item)}
                             >
                               <EditIcon />
                             </IconButton>
                           </TableCell>
 
-                          <TableCell align="center">
+                          <TableCell>
                             <IconButton
-                              onClick={() => onDeleteCourseIconClick(item)}
+                              style={{marginLeft:'15px'}}
+                              onClick={() => onDeleteStudentIconClick(item)}
                             >
                               <DeleteIcon />
                             </IconButton>
                           </TableCell>
+
                         </TableRow>
                       );
                     })
@@ -307,14 +299,13 @@ export const CourseTable = () => {
           nextIconButtonText={"Siguiente Página"}
           rowsPerPageOptions={[5, 10, 25, { label: "Todos", value: -1 }]}
           component="div"
-          count={courses.length}
+          count={students.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
-
     </>
   );
 };
