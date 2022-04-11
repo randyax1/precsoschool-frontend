@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 
 import {
+  Alert,
   Paper,
   TableContainer,
   Table,
@@ -11,6 +12,7 @@ import {
   TablePagination,
   Typography,
   IconButton,
+  Snackbar
 } from "@mui/material";
 import { makeStyles, createStyles } from "@mui/styles";
 
@@ -18,9 +20,10 @@ import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
-import { getStudents } from "../../../lib/demoBackEndClient";
+import { getStudents, deleteStudentById } from "../../../lib/demoBackEndClient";
 import { AuthContext } from "../../../auth/authContext";
 import InputText from "../../../components/InputText";
+import { QuestionModal } from "../../../components/QuestionModal";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -164,7 +167,7 @@ export const StudentTable = () => {
 
   const onStudentDeleted = async () => {
     setDeleteStudentModalOpen(false);
-    //Falta peticion de retorno de id
+    await deleteStudentById(studentToBeDelete, token)
     setOpenAlert(true);
     await fetchStudents();
   };
@@ -182,6 +185,7 @@ export const StudentTable = () => {
     <>
       <Paper className={classes.searchArea}>
         <InputText
+          type="search"
           icon={<SearchRoundedIcon />}
           id="filter"
           onChange={onFilterInputChange}
@@ -230,6 +234,10 @@ export const StudentTable = () => {
                         item.lastName
                           .toLowerCase()
                           .includes(filter.toLowerCase())
+                      ) {
+                        return item;
+                      } else if (
+                        item.email.toLowerCase().includes(filter.toLowerCase())
                       ) {
                         return item;
                       }
@@ -306,6 +314,27 @@ export const StudentTable = () => {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
+
+      <QuestionModal
+      open={deleteStudentModalOpen}
+      setOpen={setDeleteStudentModalOpen}
+      onCancel={() => setDeleteStudentModalOpen(false)}
+      onConfirm={() => onStudentDeleted()}
+      title={"Eliminar estudiante"}
+      body={"¿Estás seguro que deseas eliminar este estudiante?"}
+      />
+
+      <Snackbar
+      open={openAlert}
+      autoHideDuration={7000}
+      onClose={handleAlertClose}
+      >
+        <Alert onClose={handleAlertClose}
+        variant="filled" severity="success">
+          El estudiante a sido eliminado.
+        </Alert>
+      </Snackbar>
+
     </>
   );
 };

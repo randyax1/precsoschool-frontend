@@ -3,6 +3,7 @@ import moment from "moment";
 import "moment/locale/es-mx"
 
 import {
+  Alert,
   Paper,
   TableContainer,
   Table,
@@ -13,6 +14,7 @@ import {
   TablePagination,
   Typography,
   IconButton,
+  Snackbar
 } from "@mui/material";
 import { makeStyles, createStyles } from "@mui/styles";
 
@@ -22,7 +24,8 @@ import EditIcon from "@mui/icons-material/Edit";
 
 import InputText from "../../../components/InputText";
 import { AuthContext } from "../../../auth/authContext";
-import { getCourses } from "../../../lib/demoBackEndClient";
+import { getCourses, deleteCourseById } from "../../../lib/demoBackEndClient";
+import { QuestionModal } from "../../../components/QuestionModal";
 
 moment.locale("es-mx");
 
@@ -171,7 +174,7 @@ export const CourseTable = () => {
 
   const onCourseDeleted = async () => {
     setDeleteCourseModalOpen(false);
-    //Falta peticion de retorno de id
+    await deleteCourseById(courseToBeDelete, token)
     setOpenAlert(true);
     await fetchCourses();
   };
@@ -314,6 +317,26 @@ export const CourseTable = () => {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
+
+      <QuestionModal
+      open={deleteCourseModalOpen}
+      setOpen={setDeleteCourseModalOpen}
+      onCancel={() => setDeleteCourseModalOpen(false)}
+      onConfirm={() => onCourseDeleted()}
+      title={"Eliminar Curso"}
+      body={"¿Estás seguro que deseas eliminar este curso?"}
+      />
+
+      <Snackbar
+      open={openAlert}
+      autoHideDuration={7000}
+      onClose={handleAlertClose}
+      >
+        <Alert onClose={handleAlertClose}
+        variant="filled" severity="success">
+          El curso a sido eliminado.
+        </Alert>
+      </Snackbar>
 
     </>
   );
