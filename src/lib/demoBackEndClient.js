@@ -56,6 +56,19 @@ export const getCourses = async (token) => {
         );
 };
 
+export const deleteCourseById = async (courseId, token) => {
+    const config = {
+        headers: {
+            ...createAuthHeader(token)
+        }
+    };
+
+    return await axios.delete(
+        `${host}${COURSE_ENDPOINT}${courseId}`,
+        config
+    );
+};
+
 export const getStudents = async (token) => {
     const config ={
         headers: {
@@ -67,4 +80,17 @@ export const getStudents = async (token) => {
         `${host}${STUDENT_ENDPOINT}`,
         config
     );
+};
+
+export const deleteStudentById = async (studentId, token) => {
+    const config = {
+        headers: {
+            ...createAuthHeader(token)
+        }
+    }
+
+    return await axios.delete(
+        `${host}${STUDENT_ENDPOINT}${studentId}`,
+        config
+        );
 };
