@@ -26,6 +26,7 @@ const ButtonLoading = (props) => {
     return (
         <>
         <Button
+        startIcon={props.icon}
         style={{backgroundColor:'#F26E09'}}
         size="large"
         fullWidth={props.fullWidth}

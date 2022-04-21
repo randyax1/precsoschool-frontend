@@ -4,6 +4,7 @@ import "moment/locale/es-mx"
 
 import {
   Alert,
+  Grid,
   Paper,
   TableContainer,
   Table,
@@ -19,13 +20,16 @@ import {
 import { makeStyles, createStyles } from "@mui/styles";
 
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
 import InputText from "../../../components/InputText";
+import TitleLabel from "../../../components/TitleLabel";
 import { AuthContext } from "../../../auth/authContext";
-import { getCourses, deleteCourseById } from "../../../lib/demoBackEndClient";
+import ButtonLoading from "../../../components/ButtonLoading";
 import { QuestionModal } from "../../../components/QuestionModal";
+import { getCourses, deleteCourseById } from "../../../lib/demoBackEndClient";
 
 moment.locale("es-mx");
 
@@ -54,7 +58,7 @@ const useStyles = makeStyles((theme) =>
     },
     container: {
       [theme.breakpoints.up("sm")]: {
-        height: "54vh",
+        height: "65vh",
       },
 
       [theme.breakpoints.down("xs")]: {
@@ -191,13 +195,32 @@ export const CourseTable = () => {
   return (
     <>
       <Paper className={classes.searchArea}>
+        <Grid container mt={3}>
+
+        <Grid item xs={6} sm={4} p={1} display={{ xs: "block"}}>
+        <TitleLabel titleLabel="Cursos"/>
+        </Grid>
+
+        <Grid style={{textAlign:'right'}} item xs={6} pr={3} pt={2} display={{ xs: "block", sm: "none" }}>
+         <ButtonLoading icon={<AddRoundedIcon/>} label="Agregar"/>
+        </Grid>
+
+        <Grid item xs={12} sm={4}>
         <InputText
+          placeHolder="¿Que estas Buscando?"
           type="search"
           icon={<SearchRoundedIcon />}
           id="filter"
           onChange={onFilterInputChange}
-          label="¿Que estas buscando?"
-        />
+         
+          />
+        </Grid>
+
+        <Grid style={{textAlign:'right'}} item display={{ xs: "none", sm: "block" }} sm={4} pr={4} pt={1}>
+         <ButtonLoading icon={<AddRoundedIcon/>} label="Agregar"/>
+        </Grid>
+
+        </Grid>
       </Paper>
 
       <Paper variant="outlined" className={classes.root}>

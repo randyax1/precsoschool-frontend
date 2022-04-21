@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 
 import {
   Alert,
+  Grid,
   Paper,
   TableContainer,
   Table,
@@ -12,18 +13,21 @@ import {
   TablePagination,
   Typography,
   IconButton,
-  Snackbar
+  Snackbar,
 } from "@mui/material";
 import { makeStyles, createStyles } from "@mui/styles";
 
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
-import { getStudents, deleteStudentById } from "../../../lib/demoBackEndClient";
-import { AuthContext } from "../../../auth/authContext";
 import InputText from "../../../components/InputText";
+import { AuthContext } from "../../../auth/authContext";
+import TitleLabel from "../../../components/TitleLabel";
+import ButtonLoading from "../../../components/ButtonLoading";
 import { QuestionModal } from "../../../components/QuestionModal";
+import { getStudents, deleteStudentById } from "../../../lib/demoBackEndClient";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -167,7 +171,7 @@ export const StudentTable = () => {
 
   const onStudentDeleted = async () => {
     setDeleteStudentModalOpen(false);
-    await deleteStudentById(studentToBeDelete, token)
+    await deleteStudentById(studentToBeDelete, token);
     setOpenAlert(true);
     await fetchStudents();
   };
@@ -184,13 +188,36 @@ export const StudentTable = () => {
   return (
     <>
       <Paper className={classes.searchArea}>
-        <InputText
-          type="search"
-          icon={<SearchRoundedIcon />}
-          id="filter"
-          onChange={onFilterInputChange}
-          label="¿Que estas buscando?"
-        />
+
+        <Grid container mt={3}>
+
+          <Grid item xs={6} sm={4} p={1} display={{ xs: "none", sm: "block" }}>
+            <TitleLabel titleLabel="Estudiantes" />
+          </Grid>
+
+          <Grid item xs={6} sm={4} p={1} display={{ xs: "block", sm: "none" }}>
+            <TitleLabel titleLabel="Alumnos" />
+          </Grid>
+
+          <Grid style={{ textAlign: "right" }} item xs={6} pr={3} pt={2} display={{ xs: "block", sm: "none" }}>
+            <ButtonLoading icon={<AddRoundedIcon />} label="Agregar" />
+          </Grid>
+
+          <Grid item xs={12} sm={4}>
+            <InputText
+              placeHolder="¿Que estas Buscando?"
+              type="search"
+              icon={<SearchRoundedIcon />}
+              id="filter"
+              onChange={onFilterInputChange}
+            />
+          </Grid>
+
+          <Grid style={{ textAlign: "right" }} item display={{ xs: "none", sm: "block" }} sm={4} pr={4} pt={1}>
+            <ButtonLoading icon={<AddRoundedIcon />} label="Agregar" />
+          </Grid>
+          
+        </Grid>
       </Paper>
 
       <Paper elevation={5} variant="outlined" className={classes.root}>
@@ -201,15 +228,16 @@ export const StudentTable = () => {
               <TableRow>
                 {columns.map((column, index) => (
                   <TableCell
-                    style={{backgroundColor:'#e6e6e6'}}
+                    style={{ backgroundColor: "#e6e6e6" }}
                     className={classes.tableHead}
                     key={index}
                     align={"left"}
                   >
-                    <Typography 
-                    sx={{fontWeight: 'bold'}} 
-                    className={classes.textTableFontHeader} 
-                    variant="h6">
+                    <Typography
+                      sx={{ fontWeight: "bold" }}
+                      className={classes.textTableFontHeader}
+                      variant="h6"
+                    >
                       {column.label}
                     </Typography>
                   </TableCell>
@@ -286,13 +314,12 @@ export const StudentTable = () => {
 
                           <TableCell>
                             <IconButton
-                              style={{marginLeft:'15px'}}
+                              style={{ marginLeft: "15px" }}
                               onClick={() => onDeleteStudentIconClick(item)}
                             >
                               <DeleteIcon />
                             </IconButton>
                           </TableCell>
-
                         </TableRow>
                       );
                     })
@@ -302,7 +329,9 @@ export const StudentTable = () => {
         </TableContainer>
         <TablePagination
           labelRowsPerPage={"Filas por Página"}
-          labelDisplayedRows={({ from, to, count }) => `Mostrando ${from}-${to} de ${count}`}
+          labelDisplayedRows={({ from, to, count }) =>
+            `Mostrando ${from}-${to} de ${count}`
+          }
           backIconButtonText={"Página Anterior"}
           nextIconButtonText={"Siguiente Página"}
           rowsPerPageOptions={[5, 10, 25, { label: "Todos", value: -1 }]}
@@ -316,25 +345,23 @@ export const StudentTable = () => {
       </Paper>
 
       <QuestionModal
-      open={deleteStudentModalOpen}
-      setOpen={setDeleteStudentModalOpen}
-      onCancel={() => setDeleteStudentModalOpen(false)}
-      onConfirm={() => onStudentDeleted()}
-      title={"Eliminar estudiante"}
-      body={"¿Estás seguro que deseas eliminar este estudiante?"}
+        open={deleteStudentModalOpen}
+        setOpen={setDeleteStudentModalOpen}
+        onCancel={() => setDeleteStudentModalOpen(false)}
+        onConfirm={() => onStudentDeleted()}
+        title={"Eliminar estudiante"}
+        body={"¿Estás seguro que deseas eliminar este estudiante?"}
       />
 
       <Snackbar
-      open={openAlert}
-      autoHideDuration={7000}
-      onClose={handleAlertClose}
+        open={openAlert}
+        autoHideDuration={7000}
+        onClose={handleAlertClose}
       >
-        <Alert onClose={handleAlertClose}
-        variant="filled" severity="success">
+        <Alert onClose={handleAlertClose} variant="filled" severity="success">
           El estudiante a sido eliminado.
         </Alert>
       </Snackbar>
-
     </>
   );
 };

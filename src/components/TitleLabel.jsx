@@ -14,11 +14,8 @@ const useStyles = makeStyles((theme) =>
         userSelect: 'none',
         WebkitUserSelect: 'none',
 
-        paddingLeft:'90px',
-
         [theme.breakpoints.down('md')]: {
-          fontSize:'3 5px',
-          paddingLeft:'80px',
+          fontSize:'35px',
         },
 
     }
